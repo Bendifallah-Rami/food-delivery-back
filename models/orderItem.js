@@ -3,12 +3,12 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const OrderItem = sequelize.define('OrderItem', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     orderId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'orders',
@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
       }
     },
     menuItemId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'menu_items',

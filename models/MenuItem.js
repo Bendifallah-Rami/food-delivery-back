@@ -3,8 +3,8 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const MenuItem = sequelize.define('MenuItem', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     name: {
@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
       allowNull: true
     },
     categoryId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'categories',

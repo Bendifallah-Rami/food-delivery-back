@@ -3,12 +3,12 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const Payment = sequelize.define('Payment', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     orderId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
       references: {

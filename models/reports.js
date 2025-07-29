@@ -3,8 +3,8 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const Reports = sequelize.define('Reports', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     reportType: {
@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     generatedBy: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'users',

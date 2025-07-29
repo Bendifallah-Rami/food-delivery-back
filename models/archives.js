@@ -3,8 +3,8 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const Archives = sequelize.define('Archives', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     entityType: {
@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     entityId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     data: {
@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     archivedBy: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'users',

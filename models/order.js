@@ -3,8 +3,8 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const Order = sequelize.define('Order', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     orderNumber: {
@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
       unique: true
     },
     customerId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'users',
@@ -49,7 +49,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     deliveryAddressId: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'user_addresses',

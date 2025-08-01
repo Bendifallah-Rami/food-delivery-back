@@ -17,13 +17,13 @@ module.exports = (sequelize) => {
     },
     password: { 
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true // Allow null for OAuth users
     },
-    firstName: {
+    firstName: { 
       type: DataTypes.STRING,
       allowNull: false
     },
-    lastName: {
+    lastName: { 
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -47,6 +47,25 @@ module.exports = (sequelize) => {
     lastLogin: {
       type: DataTypes.DATE,
       allowNull: true
+    },
+    // OAuth fields
+    googleId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true
+    },
+    provider: {
+      type: DataTypes.ENUM('local', 'google'),
+      allowNull: false,
+      defaultValue: 'local'
+    },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    isOAuthUser: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {
     tableName: 'users',

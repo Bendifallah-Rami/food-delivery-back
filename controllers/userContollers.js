@@ -2,22 +2,45 @@ const { User } = require("../models"); // Ensure this path is correct
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
-    res.status(200).json(users);
+    const users = await User.findAll({
+      attributes: { 
+        exclude: ['password'] // Exclude password from response
+      }
+    });
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ 
+      success: false,
+      error: err.message 
+    });
   }
 };
 const getUserById = async (req, res) => {
-  // const  {id} =req.params;
   try {
-    const userData = await User.findByPk(req.params.id);
+    const userData = await User.findByPk(req.params.id, {
+      attributes: { 
+        exclude: ['password'] // Exclude password from response
+      }
+    });
     if (!userData) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ 
+        success: false,
+        error: "User not found" 
+      });
     }
-    res.status(200).json(userData);
+    res.status(200).json({
+      success: true,
+      data: userData
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ 
+      success: false,
+      error: err.message 
+    });
   }
 };
 const addUser = async (req, res) => {
@@ -34,17 +57,34 @@ const addUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const Id = req.params.id;
   try {
-    const [updated] = await User.update(req.body, {
+    // Remove password from update data if present (should use separate endpoint)
+    const { password, ...updateData } = req.body;
+    
+    const [updated] = await User.update(updateData, {
       where: { id: Id },
     });
     if (updated) {
-      const updatedUser = await User.findByPk(Id);
-      res.status(200).json({ message: `User ${updatedUser.firstName} updated successfully` });
+      const updatedUser = await User.findByPk(Id, {
+        attributes: { 
+          exclude: ['password'] // Exclude password from response
+        }
+      });
+      res.status(200).json({ 
+        success: true,
+        message: `User ${updatedUser.firstName} updated successfully`,
+        data: updatedUser
+      });
     } else {
-      res.status(404).json({ error: "User not found" });
+      res.status(404).json({ 
+        success: false,
+        error: "User not found" 
+      });
     }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ 
+      success: false,
+      error: err.message 
+    });
   }
 };
 
@@ -55,12 +95,21 @@ const deleteUser = async (req, res) => {
                 where: { id: id }
             });
             if (deleteUser) {
-                res.status(200).json({ message: `User with ID ${id} deleted successfully` });
+                res.status(200).json({ 
+                    success: true,
+                    message: `User with ID ${id} deleted successfully` 
+                });
             } else {
-                res.status(404).json({ error: "User not found" });
+                res.status(404).json({ 
+                    success: false,
+                    error: "User not found" 
+                });
             }
      }catch(err){
-         res.status(500).json({ error: err.message });
+         res.status(500).json({ 
+             success: false,
+             error: err.message  
+         });
      } 
 }
 

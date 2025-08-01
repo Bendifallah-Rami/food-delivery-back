@@ -8,7 +8,7 @@ module.exports = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: 'postgres',
-    logging: console.log, // Enable SQL logging in development
+    logging: false, // Disable SQL logging in development
   },
   test: {
     username: process.env.DB_USER,

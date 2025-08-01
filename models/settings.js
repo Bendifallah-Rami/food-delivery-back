@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
     value: {
       type: DataTypes.TEXT,
       allowNull: true
-    },
+    }, 
     type: {
       type: DataTypes.ENUM('string', 'number', 'boolean', 'json'),
       allowNull: false,

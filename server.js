@@ -1,12 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
 const { testConnection } = require('./config/database');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 
+// Load environment variables
 dotenv.config();
+
+// Initialize passport configuration
+require('./config/passport');
 
 
 const app = express();
@@ -16,6 +21,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(passport.initialize());
 
 
 // app.use(express.urlencoded({ extended: true }));
@@ -24,6 +30,7 @@ app.use(cookieParser());
 //routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+
 
 
 

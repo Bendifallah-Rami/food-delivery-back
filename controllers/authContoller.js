@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const { User } = require('../models');
+const emailService = require('../services/emailService');
 
 const register = async (req, res) => {
     try {
@@ -104,6 +105,11 @@ const register = async (req, res) => {
                 user: userResponse,
                 token
             }
+        });
+
+        // Send welcome email asynchronously (don't wait for it)
+        emailService.sendWelcomeEmail(newUser).catch(err => {
+            console.error('Failed to send welcome email:', err);
         });
 
     } catch (error) {

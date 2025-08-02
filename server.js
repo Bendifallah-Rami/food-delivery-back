@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const userAddressRoutes = require('./routes/userAddressRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 // const testRoutes = require('./routes/testRoutes');
 const { apiLimiter } = require('./middleware/rateLimiter');
 
@@ -41,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/addresses', userAddressRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/email', emailRoutes);
 // app.use('/api/test', testRoutes);
 
 

@@ -144,6 +144,9 @@ const googleAuth = passport.authenticate('google', {
 
 const googleCallback = async (req, res) => {
     try {
+        // Update last login for OAuth user
+        await req.user.update({ lastLogin: new Date() });
+
         // Generate JWT token for the OAuth user
         const token = jwt.sign(
             { 

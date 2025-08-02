@@ -6,6 +6,9 @@ const { testConnection } = require('./config/database');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+// const testRoutes = require('./routes/testRoutes');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +26,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
 
+// Apply general rate limiting to all other API routes
+app.use('/api', apiLimiter);
+
 
 // app.use(express.urlencoded({ extended: true }));
 
@@ -30,6 +36,8 @@ app.use(passport.initialize());
 //routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+// app.use('/api/test', testRoutes);
 
 
 

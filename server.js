@@ -7,6 +7,8 @@ const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const userAddressRoutes = require('./routes/userAddressRoutes');
+const staffRoutes = require('./routes/staffRoutes');
 // const testRoutes = require('./routes/testRoutes');
 const { apiLimiter } = require('./middleware/rateLimiter');
 
@@ -37,6 +39,8 @@ app.use('/api', apiLimiter);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/addresses', userAddressRoutes);
+app.use('/api/staff', staffRoutes);
 // app.use('/api/test', testRoutes);
 
 

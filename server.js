@@ -11,6 +11,7 @@ const userAddressRoutes = require('./routes/userAddressRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const menuItemRoutes = require('./routes/menuItemRoutes');
+const stockRoutes = require('./routes/stockRoutes');
 // const testRoutes = require('./routes/testRoutes');
 const { apiLimiter } = require('./middleware/rateLimiter');
 
@@ -45,6 +46,7 @@ app.use('/api/addresses', userAddressRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/menu-items', menuItemRoutes);
+app.use('/api/stock', stockRoutes);
 // app.use('/api/test', testRoutes);
 
 

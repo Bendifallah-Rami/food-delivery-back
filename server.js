@@ -15,6 +15,7 @@ const stockRoutes = require('./routes/stockRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const deliveryRoutes = require('./routes/deliveryRoutes');
+const reportsRoutes = require('./routes/reportsRoutes');
 // const testRoutes = require('./routes/testRoutes');
 const { apiLimiter } = require('./middleware/rateLimiter');
 
@@ -53,12 +54,13 @@ app.use('/api/stock', stockRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/deliveries', deliveryRoutes);
+app.use('/api/reports', reportsRoutes);
 
 
 
 
 
-// Test route
+// welcome route
 app.get('/', (req, res) => {
   res.send("welcome to FUDO food delivery backend")
 });

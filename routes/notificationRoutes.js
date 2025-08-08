@@ -42,7 +42,7 @@ router.use(authenticateToken);
 
 // Apply common middleware for all notification routes
 router.use(setNotificationHeaders);
-router.use(logNotificationOperation);
+// Note: logNotificationOperation is applied per route to access req.route properly
 
 /**
  * @route GET /api/notifications
@@ -55,6 +55,7 @@ router.use(logNotificationOperation);
  * @query {string} priority - Filter by priority level
  */
 router.get('/', 
+  logNotificationOperation,
   validateQueryParams,
   limitPageSize,
   getNotifications
@@ -67,6 +68,7 @@ router.get('/',
  * @param {string} id - Notification ID
  */
 router.put('/:id/read', 
+  logNotificationOperation,
   validateNotificationId,
   markAsRead
 );
@@ -77,6 +79,7 @@ router.put('/:id/read',
  * @access Private
  */
 router.put('/read-all', 
+  logNotificationOperation,
   bulkOperationLimiter, 
   markAllAsRead
 );
@@ -87,6 +90,7 @@ router.put('/read-all',
  * @access Admin
  */
 router.post('/cleanup',
+  logNotificationOperation,
   bulkOperationLimiter,
   authorizeNotificationAccess,
   cleanupExpiredNotifications
@@ -99,6 +103,7 @@ router.post('/cleanup',
  * @param {string} id - Notification ID
  */
 router.delete('/:id', 
+  logNotificationOperation,
   validateNotificationId,
   deleteNotification
 );
@@ -118,6 +123,7 @@ router.delete('/:id',
  * @body {string} expiresAt - Expiration date (optional)
  */
 router.post('/create', 
+  logNotificationOperation,
   createNotificationLimiter,
   validateNotificationInput,
   authorizeNotificationAccess,
@@ -131,6 +137,7 @@ router.post('/create',
  * @query {string} period - Time period (today, this_week, this_month)
  */
 router.get('/stats', 
+  logNotificationOperation,
   authorizeNotificationAccess,
   getNotificationStats
 );

@@ -217,12 +217,12 @@ const validateNotificationInput = (req, res, next) => {
 // Security middleware for notification access control
 const authorizeNotificationAccess = (req, res, next) => {
   const userRole = req.user.role;
-  const operation = req.route.path;
+  const routePath = req.route?.path || req.path || req.originalUrl || '';
 
   // Admin-only operations
   const adminOnlyOperations = ['/stats', '/create', '/cleanup'];
   
-  if (adminOnlyOperations.some(op => operation.includes(op))) {
+  if (adminOnlyOperations.some(op => routePath.includes(op))) {
     if (userRole !== 'admin') {
       return res.status(403).json({
         success: false,
@@ -265,7 +265,8 @@ const validateNotificationId = (req, res, next) => {
 
 // Middleware to log notification operations for audit
 const logNotificationOperation = (req, res, next) => {
-  const operation = req.method + ' ' + req.route.path;
+  const routePath = req.route?.path || req.path || req.originalUrl || 'unknown';
+  const operation = req.method + ' ' + routePath;
   const userId = req.user ? req.user.id : 'anonymous';
   const userRole = req.user ? req.user.role : 'none';
   

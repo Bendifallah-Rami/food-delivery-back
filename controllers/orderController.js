@@ -1,6 +1,7 @@
 const { Order, OrderItem, MenuItem, User, UserAddress, Category, Stock, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const emailService = require('../services/emailService');
+const NotificationService = require('../services/notificationService');
 
 // Helper function to generate unique order number
 const generateOrderNumber = () => {
@@ -518,9 +519,15 @@ const createOrder = async (req, res) => {
     // Send order confirmation email
     try {
       await sendOrderConfirmationEmail(createdOrder, req.user);
-    } catch (emailError) {
-      console.error('Failed to send order confirmation email:', emailError);
-      // Don't fail the order if email fails
+    } catch (error) {
+      console.error('Error sending order confirmation email:', error);
+    }
+
+    // Send notifications
+    try {
+      await NotificationService.notifyNewOrder(createdOrder.id, req.user.id);
+    } catch (error) {
+      console.error('Error sending order notifications:', error);
     }
 
     res.status(201).json({
@@ -588,6 +595,14 @@ const updateOrderStatus = async (req, res) => {
     } catch (emailError) {
       console.error('Failed to send status update email:', emailError);
       // Don't fail the operation if email fails
+    }
+
+    // Send status update notification
+    try {
+      await NotificationService.notifyOrderStatusChange(id, status, order.customerId);
+    } catch (notificationError) {
+      console.error('Failed to send status update notification:', notificationError);
+      // Don't fail the operation if notification fails
     }
 
     // Fetch updated order

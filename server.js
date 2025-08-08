@@ -16,8 +16,10 @@ const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const deliveryRoutes = require('./routes/deliveryRoutes');
 const reportsRoutes = require('./routes/reportsRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 // const testRoutes = require('./routes/testRoutes');
 const { apiLimiter } = require('./middleware/rateLimiter');
+const { systemNotificationMiddleware } = require('./middleware/notificationMiddleware');
 
 // Load environment variables
 dotenv.config();
@@ -30,7 +32,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    process.env.FRONTEND_URL || "http://localhost:3000",
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+    "http://127.0.0.1:3000",
+    "file://"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
@@ -55,11 +68,12 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/deliveries', deliveryRoutes);
 app.use('/api/reports', reportsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 
 
 
-
+ 
 // welcome route
 app.get('/', (req, res) => {
   res.send("welcome to FUDO food delivery backend")
@@ -67,9 +81,20 @@ app.get('/', (req, res) => {
 
  
 // Start server
-app.listen(PORT, () => {
+const http = require('http');
+const server = http.createServer(app);
+
+// Initialize real-time notifications
+const { initializeRealTimeNotifications } = require('./services/realTimeNotificationService');
+const realTimeService = initializeRealTimeNotifications(server);
+
+// Start scheduled cleanup for notifications
+systemNotificationMiddleware.scheduledCleanup();
+
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`Real-time notifications enabled on Socket.IO`);
   testConnection();
 });
 

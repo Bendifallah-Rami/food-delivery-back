@@ -221,7 +221,7 @@ const orderStatusEmail = (user, order, oldStatus, newStatus) => {
 // Password reset email template
 const passwordResetEmail = (user, resetToken) => {
   const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
-  
+   
   return {
     subject: '🔑 Reset Your FUDO Password',
     html: `

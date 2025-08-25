@@ -1,55 +1,86 @@
 // Welcome email template
 const welcomeEmail = (user) => {
   return {
-    subject: '🍕 Welcome to FUDO - Your Food Delivery Journey Begins!',
+    subject: '� Welcome to FUDO! You\'re all set!',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
-        <div style="background-color: #ff6b35; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">🍕 Welcome to FUDO!</h1>
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 32px;">🍕 Welcome to FUDO!</h1>
+          <p style="color: white; margin: 10px 0 0 0; font-size: 18px;">Your food adventure starts now! 🚀</p>
         </div>
         
-        <div style="background-color: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-          <h2 style="color: #333; margin-top: 0;">Hello ${user.firstName}! 👋</h2>
+        <div style="background-color: white; padding: 40px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          <h2 style="color: #333; margin-top: 0; font-size: 24px;">Hey ${user.firstName}! 👋</h2>
           
-          <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            Thank you for joining FUDO, your premier food delivery service! We're excited to have you on board.
+          <p style="color: #666; font-size: 18px; line-height: 1.6; margin: 20px 0;">
+            🎉 <strong>Congratulations!</strong> Your FUDO account is ready and you're already logged in! 
+            No verification needed - we keep things simple! 😊
           </p>
           
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #ff6b35; margin-top: 0;">🚀 What's Next?</h3>
-            <ul style="color: #666; line-height: 1.8;">
-              <li>Browse our delicious menu items</li>
-              <li>Add your delivery addresses</li>
-              <li>Place your first order and enjoy!</li>
-            </ul>
+          <div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 25px; border-radius: 12px; margin: 25px 0;">
+            <h3 style="color: #d4671e; margin-top: 0; font-size: 20px;">🚀 You can now:</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+              <div style="flex: 1; min-width: 200px;">
+                <p style="color: #d4671e; line-height: 1.8; margin: 5px 0; font-size: 16px;">
+                  🍔 Browse our delicious menu<br>
+                  📍 Add your delivery address<br>
+                  🛒 Place orders instantly<br>
+                  📱 Track deliveries in real-time
+                </p>
+              </div>
+            </div>
           </div>
           
-          <div style="text-align: center; margin: 30px 0;">
+          <div style="text-align: center; margin: 35px 0;">
             <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}" 
-               style="background-color: #ff6b35; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;">
-              Start Ordering Now 🛒
+               style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                      color: white; 
+                      padding: 18px 40px; 
+                      text-decoration: none; 
+                      border-radius: 30px; 
+                      font-weight: bold; 
+                      font-size: 18px;
+                      display: inline-block;
+                      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+              🍕 Start Ordering Now!
             </a>
           </div>
           
-          <p style="color: #999; font-size: 14px; text-align: center; margin-top: 30px;">
-            Need help? Contact us at support@fudo.com
+          <div style="background: #e8f5e8; border: 1px solid #4caf50; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <p style="margin: 0; color: #2e7d32; font-size: 16px; text-align: center;">
+              💡 <strong>Pro Tip:</strong> Download our mobile app for even faster ordering!
+            </p>
+          </div>
+          
+          <p style="color: #999; font-size: 14px; text-align: center; margin-top: 30px; line-height: 1.6;">
+            Questions? We're here to help! 💬<br>
+            📧 support@fudo.com | 📞 1-800-FUDO-HELP
           </p>
+        </div>
+        
+        <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+          <p style="margin: 0;">© 2024 FUDO Food Delivery. Made with ❤️ for food lovers!</p>
         </div>
       </div>
     `,
     text: `
-      Welcome to FUDO, ${user.firstName}!
+      🎉 Welcome to FUDO, ${user.firstName}!
       
-      Thank you for joining our food delivery service. We're excited to have you on board!
+      Your account is ready and you're already logged in! No verification needed - we keep things simple! 😊
       
-      What's next?
-      - Browse our delicious menu items
-      - Add your delivery addresses  
-      - Place your first order and enjoy!
+      You can now:
+      🍔 Browse our delicious menu
+      📍 Add your delivery address  
+      🛒 Place orders instantly
+      📱 Track deliveries in real-time
       
-      Visit: ${process.env.FRONTEND_URL || 'http://localhost:3000'}
+      Start ordering: ${process.env.FRONTEND_URL || 'http://localhost:3000'}
       
-      Need help? Contact us at support@fudo.com
+      Questions? Contact us at support@fudo.com
+      
+      Questions? Contact us at support@fudo.com
+      
+      © 2024 FUDO Food Delivery
     `
   };
 };

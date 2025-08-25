@@ -44,6 +44,14 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    emailVerificationToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    emailVerificationExpires: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     lastLogin: {
       type: DataTypes.DATE,
       allowNull: true

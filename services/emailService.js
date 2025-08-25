@@ -39,6 +39,98 @@ class EmailService {
     }
   }
 
+  // Send email verification email
+  async sendEmailVerificationEmail(user, verificationToken) {
+    const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email/${verificationToken}`;
+    
+    const template = {
+      subject: '📧 Verify Your Email - FUDO Food Delivery',
+      html: `
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+            <h1 style="color: white; margin: 0;">🍕 FUDO Food Delivery</h1>
+          </div>
+          
+          <div style="padding: 30px; background: #f9f9f9;">
+            <h2 style="color: #333;">Hi ${user.firstName}!</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6; color: #555;">
+              Thank you for registering with FUDO Food Delivery! 🎉
+            </p>
+            
+            <p style="font-size: 16px; line-height: 1.6; color: #555;">
+              To complete your registration and start ordering delicious food, please verify your email address by clicking the button below:
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${verificationUrl}" 
+                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        color: white; 
+                        padding: 15px 30px; 
+                        text-decoration: none; 
+                        border-radius: 25px; 
+                        font-weight: bold;
+                        display: inline-block;">
+                ✅ Verify My Email
+              </a>
+            </div>
+            
+            <p style="font-size: 14px; color: #888; line-height: 1.6;">
+              Or copy and paste this link in your browser:<br>
+              <a href="${verificationUrl}" style="color: #667eea; word-break: break-all;">${verificationUrl}</a>
+            </p>
+            
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <p style="margin: 0; color: #856404; font-size: 14px;">
+                ⚠️ <strong>Important:</strong> This verification link will expire in 24 hours. If you didn't create an account, please ignore this email.
+              </p>
+            </div>
+            
+            <p style="font-size: 16px; line-height: 1.6; color: #555;">
+              Once verified, you'll be able to:
+            </p>
+            <ul style="color: #555; font-size: 16px; line-height: 1.6;">
+              <li>🛒 Browse our delicious menu</li>
+              <li>📱 Place orders easily</li>
+              <li>🚚 Track your deliveries in real-time</li>
+              <li>⭐ Rate and review your meals</li>
+            </ul>
+            
+            <p style="font-size: 16px; line-height: 1.6; color: #555;">
+              Welcome to the FUDO family! 🍽️
+            </p>
+          </div>
+          
+          <div style="background: #333; color: white; padding: 20px; text-align: center; font-size: 14px;">
+            <p style="margin: 0;">© 2024 FUDO Food Delivery. All rights reserved.</p>
+            <p style="margin: 5px 0 0 0;">Questions? Contact us at support@fudo.com</p>
+          </div>
+        </div>
+      `,
+      text: `
+        Hi ${user.firstName}!
+        
+        Thank you for registering with FUDO Food Delivery!
+        
+        To complete your registration, please verify your email address by visiting:
+        ${verificationUrl}
+        
+        This verification link will expire in 24 hours.
+        
+        Welcome to the FUDO family!
+        
+        © 2024 FUDO Food Delivery
+      `
+    };
+
+    return await this.sendEmail(
+      user.email,
+      template.subject,
+      template.html,
+      template.text
+    );
+  }
+
   // Send welcome email to new users
   async sendWelcomeEmail(user) {
     const template = welcomeEmail(user);

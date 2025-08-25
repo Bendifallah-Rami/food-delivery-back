@@ -2,6 +2,7 @@
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const passport = require('passport');
 const { User } = require('../models');
 const emailService = require('../services/emailService');
@@ -52,7 +53,7 @@ const register = async (req, res) => {
         const salt = await bcrypt.genSalt(saltRounds);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create user
+        // Create user (simple registration - no email verification required)
         const newUser = await User.create({
             email: email.toLowerCase(),
             password: hashedPassword,
@@ -61,10 +62,10 @@ const register = async (req, res) => {
             phone: phone || null,
             role: role || 'customer', // Default to customer if no role specified
             isActive: true,
-            emailVerified: false
+            emailVerified: true // Auto-verify for simple UX
         });
 
-        // Generate JWT token
+        // Generate JWT token immediately
         const token = jwt.sign(
             { 
                 userId: newUser.id, 
@@ -85,7 +86,7 @@ const register = async (req, res) => {
 
         res.cookie('token', token, cookieOptions);
 
-        // Prepare response (exclude password)
+        // Prepare response (exclude password and sensitive data)
         const userResponse = {
             id: newUser.id,
             email: newUser.email,
@@ -100,14 +101,15 @@ const register = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: 'User registered successfully',
+            message: '🎉 Welcome to FUDO! Your account is ready to use.',
             data: {
                 user: userResponse,
-                token
+                token,
+                message: 'You are now logged in and ready to order!'
             }
         });
 
-        // Send welcome email asynchronously (don't wait for it)
+        // Send welcome email asynchronously (don't block registration)
         emailService.sendWelcomeEmail(newUser).catch(err => {
             console.error('Failed to send welcome email:', err);
         });
@@ -329,10 +331,157 @@ const logout = (req, res) => {
     }
 };
 
+// Verify email address
+const verifyEmail = async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        if (!token) {
+            return res.status(400).json({
+                success: false,
+                message: 'Verification token is required'
+            });
+        }
+
+        // Find user with valid verification token
+        const user = await User.findOne({
+            where: {
+                emailVerificationToken: token,
+                emailVerificationExpires: {
+                    [require('sequelize').Op.gt]: new Date()
+                }
+            }
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid or expired verification token'
+            });
+        }
+
+        // Update user as verified
+        await User.update({
+            emailVerified: true,
+            emailVerificationToken: null,
+            emailVerificationExpires: null
+        }, {
+            where: { id: user.id }
+        });
+
+        // Generate JWT token for the verified user
+        const jwtToken = jwt.sign(
+            { 
+                userId: user.id, 
+                email: user.email, 
+                role: user.role 
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRE || '24h' }
+        );
+
+        // Set JWT token in HTTP-only cookie
+        const cookieOptions = {
+            expires: new Date(Date.now() + (process.env.COOKIE_EXPIRE || 24) * 60 * 60 * 1000),
+            httpOnly: process.env.COOKIE_HTTP_ONLY === 'true' || true,
+            secure: process.env.COOKIE_SECURE === 'true' || false,
+            sameSite: 'strict'
+        };
+
+        res.cookie('token', jwtToken, cookieOptions);
+
+        res.json({
+            success: true,
+            message: 'Email verified successfully! You are now logged in.',
+            data: {
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    role: user.role,
+                    emailVerified: true
+                },
+                token: jwtToken
+            }
+        });
+
+        // Send welcome email after verification
+        emailService.sendWelcomeEmail(user).catch(err => {
+            console.error('Failed to send welcome email:', err);
+        });
+
+    } catch (error) {
+        console.error('Email verification error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error during email verification'
+        });
+    }
+};
+
+// Resend verification email
+const resendVerification = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email is required'
+            });
+        }
+
+        // Find user by email
+        const user = await User.findOne({
+            where: { 
+                email: email.toLowerCase(),
+                emailVerified: false
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found or already verified'
+            });
+        }
+
+        // Generate new verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+        // Update user with new token
+        await User.update({
+            emailVerificationToken: verificationToken,
+            emailVerificationExpires: verificationExpires
+        }, {
+            where: { id: user.id }
+        });
+
+        // Send new verification email
+        await emailService.sendEmailVerificationEmail(user, verificationToken);
+
+        res.json({
+            success: true,
+            message: 'Verification email sent successfully'
+        });
+
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error while resending verification email'
+        });
+    }
+};
+
 module.exports = {
     register,
     login,
     logout,
     googleAuth,
-    googleCallback
+    googleCallback,
+    verifyEmail,
+    resendVerification
 };

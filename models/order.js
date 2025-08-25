@@ -21,7 +21,7 @@ module.exports = (sequelize) => {
       }
     },
     status: {
-      type: DataTypes.ENUM('pending', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'cancelled'),
+      type: DataTypes.ENUM('pending', 'confirmed', 'preparing', 'ready', 'assigned', 'picked_up', 'out_for_delivery', 'delivered', 'cancelled'),
       allowNull: false,
       defaultValue: 'pending'
     },
@@ -47,6 +47,35 @@ module.exports = (sequelize) => {
     total: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
+    },
+    priority: {
+      type: DataTypes.ENUM('normal', 'high', 'urgent'),
+      allowNull: false,
+      defaultValue: 'normal'
+    },
+    driverId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'staff',
+        key: 'id'
+      }
+    },
+    statusNotes: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    statusUpdatedBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    statusUpdatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     deliveryAddressId: {
       type: DataTypes.INTEGER,
@@ -111,6 +140,14 @@ module.exports = (sequelize) => {
     Order.hasOne(models.Delivery, { 
       foreignKey: 'orderId',
       as: 'delivery'
+    });
+    Order.belongsTo(models.Staff, { 
+      foreignKey: 'driverId',
+      as: 'driver'
+    });
+    Order.belongsTo(models.User, { 
+      foreignKey: 'statusUpdatedBy',
+      as: 'statusUpdater'
     });
   };
 
